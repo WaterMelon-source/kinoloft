@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kinoloft — Плеер</title>
+    <link rel="icon" type="image/png" href="kino_icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .player-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        width: 100%;
+      }
+      .player-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--cream);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 155, 0, 0.4);
+        background: rgba(255, 155, 0, 0.08);
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .back-link:hover {
+        background: rgba(255, 155, 0, 0.2);
+        border-color: var(--orange);
+      }
+      .player-title {
+        font-size: 1.4rem;
+        color: var(--cream);
+        margin: 0;
+      }
+      .player-title::after {
+        content: none;
+      }
+      .player-wrap {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 155, 0, 0.25);
+        box-shadow: 0 12px 40px rgba(255, 155, 0, 0.15);
+        background: #000;
+        min-height: 400px;
+        position: relative;
+      }
+      .player-status {
+        padding: 1rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+      #kinobox-player {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <!-- PWA / iOS Web App настройки -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Kinoloft" />
+    <meta name="theme-color" content="#090808" />
+    <link rel="apple-touch-icon" href="kino_icon.png" />
+
+    <!-- Для корректного масштабирования на iOS -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="header-top">
+        <a href="index.html" class="brand" style="text-decoration: none">
+          <img src="kino_icon.png" alt="Kinoloft" class="brand-icon" />
+          <h1>Kinoloft</h1>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <div class="player-page">
+        <div class="player-header">
+          <a href="index.html" class="back-link">← Назад</a>
+          <h2 class="player-title" id="player-title">Загрузка...</h2>
+        </div>
+        <div class="player-wrap">
+          <div id="kinobox-player"></div>
+        </div>
+        <p class="player-status" id="player-status"></p>
+      </div>
+    </main>
+
+    <footer>
+      <p>© Kinoloft · Плеер предоставлен Kinobox</p>
+    </footer>
+
+    <!-- Скрипт Kinobox (используем тот, что ты прислал) -->
+    <script src="https://playcdnfb.top/kinobox.js"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const filmId = params.get("id");
+        const title = params.get("title") || "Просмотр";
+
+        document.getElementById("player-title").textContent = title;
+        document.title = `Kinoloft — ${title}`;
+
+        const statusEl = document.getElementById("player-status");
+
+        if (!filmId) {
+          statusEl.textContent = "Не указан ID фильма.";
+          return;
+        }
+
+        // Ждём, пока скрипт Kinobox загрузится
+        function initPlayer(attempt = 0) {
+          if (typeof window.kinobox !== "function") {
+            if (attempt > 50) {
+              statusEl.textContent = "Не удалось загрузить плеер Kinobox.";
+              return;
+            }
+            return setTimeout(() => initPlayer(attempt + 1), 100);
+          }
+
+          try {
+            // ВАЖНО: мы НЕ передаём baseUrl. Скрипт будет использовать адрес по умолчанию
+            // (https://api.kinobox.tv/) и делать запросы напрямую с IP пользователя.
+            window.kinobox("#kinobox-player", {
+              search: { kinopoisk: filmId },
+              menu: {
+                enable: true,
+                theme: "kbt_select",
+                format: "{N} :: {T} ({Q})",
+              },
+              events: {
+                playerLoaded: () => {
+                  statusEl.textContent = "";
+                },
+              },
+              notFoundMessage:
+                "К сожалению, для этого фильма пока нет доступных источников.",
+            });
+          } catch (e) {
+            console.error(e);
+            statusEl.textContent = "Ошибка инициализации плеера.";
+          }
+        }
+
+        initPlayer();
+      })();
+    </script>
+  </body>
+</html>
