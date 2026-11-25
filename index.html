@@ -2,10 +2,14 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kinoloft</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Kinoloft — кино и сериалы</title>
     <link rel="icon" type="image/png" href="kino_icon.png" />
     <link rel="stylesheet" href="styles.css" />
+
     <!-- PWA / iOS Web App настройки -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
@@ -15,20 +19,14 @@
     <meta name="apple-mobile-web-app-title" content="Kinoloft" />
     <meta name="theme-color" content="#090808" />
     <link rel="apple-touch-icon" href="kino_icon.png" />
-
-    <!-- Для корректного масштабирования на iOS -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
   </head>
   <body>
     <header>
       <div class="header-top">
-        <div class="brand">
+        <a href="index.html" class="brand">
           <img src="kino_icon.png" alt="Kinoloft" class="brand-icon" />
           <h1>Kinoloft</h1>
-        </div>
+        </a>
         <div class="search-box">
           <input
             type="text"
@@ -40,8 +38,10 @@
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
+              width="20"
+              height="20"
               fill="none"
-              stroke="#ffffff"
+              stroke="#090808"
               stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -55,12 +55,24 @@
     </header>
 
     <main>
+      <!-- Приветствие с SVG-попкорном -->
       <section id="empty-state" class="empty-state">
         <div class="empty-icon">🍿</div>
         <h2>Найди свой фильм</h2>
-        <p>Введи название в строку поиска выше — и мы найдём его для тебя.</p>
+        <p>Введи название в поиск или выбери подборку выше.</p>
       </section>
 
+      <!-- Популярные фильмы (загружаются по умолчанию) -->
+      <section id="popular-section">
+        <div class="section-header">
+          <h2>Популярное сейчас</h2>
+        </div>
+        <div id="popular-grid" class="movie-grid">
+          <div class="loader">Загрузка...</div>
+        </div>
+      </section>
+
+      <!-- Результаты поиска -->
       <section id="results-section" class="hidden">
         <div class="section-header">
           <h2>Результаты поиска</h2>
