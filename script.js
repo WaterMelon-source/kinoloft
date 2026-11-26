@@ -1,4 +1,4 @@
-const PROXY_URL = "https://kino-proxy-dit5t8gz2-bears20.vercel.app/api/proxy";
+const PROXY_URL = "https://kino-proxy.vercel.app/api/proxy";
 const KINOPOISK_SEARCH_API =
   "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword";
 const KINOPOISK_POPULAR_API =
